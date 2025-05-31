@@ -1,5 +1,5 @@
 # Run dotnet Application
-Open Restore App.sln and run application
+Open Online App.sln and run application
 
 # React-OnlineShop
 Create Online Shop using React

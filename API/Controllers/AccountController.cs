@@ -1,4 +1,4 @@
-using API.DTOs;
+﻿using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -40,7 +40,7 @@ namespace API.Controllers
 
                 return BadRequest();
             }
-           
+
         }
 
         [HttpGet("user-info")]

@@ -1,17 +1,14 @@
-﻿using API.Controllers;
+﻿using System.Security.Claims;
+using API.Controllers;
 using API.DTOs;
 using API.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query;
 using Moq;
-using System.Linq.Expressions;
-using System.Security.Claims;
+
 namespace API.Test.Controllers
 {
-
-
     public class AccountControllerTests
     {
         private readonly Mock<UserManager<User>> _userManagerMock;

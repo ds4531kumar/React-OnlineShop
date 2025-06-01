@@ -1,46 +1,45 @@
-using System;
-using API.Entities;
+﻿using API.Entities;
 
 namespace API.Extension;
 
 public static class ProductExtensions
 {
-  public static IQueryable<Product> Sort(this IQueryable<Product> query, string? orderBy)
-  {
-    query = orderBy switch
+    public static IQueryable<Product> Sort(this IQueryable<Product> query, string? orderBy)
     {
-      "price" => query.OrderBy(p => p.Price),
-      "priceDesc" => query.OrderByDescending(p => p.Price),
-      _ => query.OrderBy(p => p.Name)
-    };
-    return query;
-  }
-  public static IQueryable<Product> Search(this IQueryable<Product> query, string? searchTerm)
-  {
-    if (string.IsNullOrWhiteSpace(searchTerm)) return query;
-
-    var lowerSearchTerm = searchTerm.Trim().ToLower();
-    return query.Where(p => p.Name.ToLower().Contains(lowerSearchTerm));
-  }
-  public static IQueryable<Product> Filter(this IQueryable<Product> query, string brands, string types)
-  {
-    List<string> brandList = [];
-    List<string> typeList = [];
-
-    if (!string.IsNullOrEmpty(brands))
-    {
-      brandList.AddRange(brands.ToLower().Split(",").ToList());
+        query = orderBy switch
+        {
+            "price" => query.OrderBy(p => p.Price),
+            "priceDesc" => query.OrderByDescending(p => p.Price),
+            _ => query.OrderBy(p => p.Name)
+        };
+        return query;
     }
-
-    if (!string.IsNullOrEmpty(types))
+    public static IQueryable<Product> Search(this IQueryable<Product> query, string? searchTerm)
     {
-      typeList.AddRange(types.ToLower().Split(",").ToList());
+        if (string.IsNullOrWhiteSpace(searchTerm)) return query;
+
+        var lowerSearchTerm = searchTerm.Trim().ToLower();
+        return query.Where(p => p.Name.ToLower().Contains(lowerSearchTerm));
     }
+    public static IQueryable<Product> Filter(this IQueryable<Product> query, string brands, string types)
+    {
+        List<string> brandList = [];
+        List<string> typeList = [];
 
-    query = query.Where(p => brandList.Count == 0 || brandList.Contains(p.Brand.ToLower()));
+        if (!string.IsNullOrEmpty(brands))
+        {
+            brandList.AddRange(brands.ToLower().Split(",").ToList());
+        }
 
-    query = query.Where(p => typeList.Count == 0 || typeList.Contains(p.Type.ToLower()));
+        if (!string.IsNullOrEmpty(types))
+        {
+            typeList.AddRange(types.ToLower().Split(",").ToList());
+        }
 
-    return query;
-  }
+        query = query.Where(p => brandList.Count == 0 || brandList.Contains(p.Brand.ToLower()));
+
+        query = query.Where(p => typeList.Count == 0 || typeList.Contains(p.Type.ToLower()));
+
+        return query;
+    }
 }

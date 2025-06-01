@@ -1,51 +1,51 @@
-namespace API.Entities;
+﻿namespace API.Entities;
 
 public class Basket
 {
-  public int Id { get; set; }
-  public required string BasketId { get; set; }
+    public int Id { get; set; }
+    public required string BasketId { get; set; }
 
-  public List<BasketItem> Items { get; set; } = [];
+    public List<BasketItem> Items { get; set; } = [];
 
-  public void AddItem(Product product, int quantity)
-  {
-    if (product == null)
+    public void AddItem(Product product, int quantity)
     {
-      throw new ArgumentNullException(nameof(product));
+        if (product == null)
+        {
+            throw new ArgumentNullException(nameof(product));
+        }
+
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
+        }
+        var existingItem = FindItem(product.Id);
+
+        if (existingItem == null)
+        {
+            Items.Add(new BasketItem
+            {
+                Quantity = quantity,
+                Product = product
+            });
+        }
+        else
+        {
+            existingItem.Quantity += quantity;
+        }
     }
 
-    if (quantity <= 0)
+    public void RemoveItem(int productId, int quantity)
     {
-      throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
-    }
-    var existingItem = FindItem(product.Id);
+        if (quantity <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
+        }
 
-    if (existingItem == null)
-    {
-      Items.Add(new BasketItem
-      {
-        Quantity = quantity,
-        Product = product
-      });
+        var item = FindItem(productId);
+        if (item == null) return;
+        item.Quantity -= quantity;
+        if (item.Quantity <= 0) Items.Remove(item);
     }
-    else
-    {
-      existingItem.Quantity += quantity;
-    }
-  }
-
-  public void RemoveItem(int productId, int quantity)
-  {
-    if (quantity <= 0)
-    {
-      throw new ArgumentOutOfRangeException(nameof(quantity), "Quantity must be greater than zero.");
-    }
-
-    var item = FindItem(productId);
-    if (item == null) return;
-    item.Quantity -= quantity;
-    if (item.Quantity <= 0) Items.Remove(item);
-  }
-  private BasketItem? FindItem(int id) => Items.FirstOrDefault(i => i.ProductId == id);
+    private BasketItem? FindItem(int id) => Items.FirstOrDefault(i => i.ProductId == id);
 }
 

@@ -12,24 +12,35 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult> Register(RegisterDto registerDto)
         {
-            var user = new User
+            try
             {
-                UserName = registerDto.Email,
-                Email = registerDto.Email
-            };
-
-            var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
+                ArgumentException.ThrowIfNullOrEmpty(registerDto.Email);
+                ArgumentException.ThrowIfNullOrEmpty(registerDto.Password);
+                var user = new User
                 {
-                    ModelState.AddModelError(error.Code, error.Description);
-                }
-                return ValidationProblem();
-            }
+                    UserName = registerDto.Email,
+                    Email = registerDto.Email
+                };
 
-            await signInManager.UserManager.AddToRoleAsync(user, "Member");
-            return Ok();
+                var result = await signInManager.UserManager.CreateAsync(user, registerDto.Password);
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(error.Code, error.Description);
+                    }
+                    return ValidationProblem();
+                }
+
+                await signInManager.UserManager.AddToRoleAsync(user, "Member");
+                return Ok();
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+           
         }
 
         [HttpGet("user-info")]

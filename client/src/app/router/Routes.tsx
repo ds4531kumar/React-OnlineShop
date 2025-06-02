@@ -12,34 +12,35 @@ import ServerError from "../errors/ServerError";
 import App from "../layout/App";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import RequireAuth from "./RequireAuth";
+import CheckoutSuccess from "../../features/checkout/CheckoutSuccess";
 
 export const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <App />,
-    children: [
-      {
-        element: <RequireAuth />,
+    {
+        path: "/",
+        element: <App />,
         children: [
-          { path: "checkout", element: <CheckoutPage /> },
-          // { path: "checkout/success", element: <CheckoutSuccess /> },
-          // { path: "orders", element: <OrdersPage /> },
-          // { path: "orders/:id", element: <OrderDetailedPage /> },
-          // { path: "inventory", element: <InventoryPage /> },
+            {
+                element: <RequireAuth />,
+                children: [
+                    { path: "checkout", element: <CheckoutPage /> },
+                    { path: "checkout/success", element: <CheckoutSuccess /> },
+                    // { path: "orders", element: <OrdersPage /> },
+                    // { path: "orders/:id", element: <OrderDetailedPage /> },
+                    // { path: "inventory", element: <InventoryPage /> },
+                ],
+            },
+            { path: "", element: <HomePage /> },
+            { path: "catalog", element: <Catalog /> },
+            { path: "catalog/:id", element: <ProductDetails /> },
+            { path: "contact", element: <ContactPage /> },
+            { path: "about", element: <AboutPage /> },
+            { path: "basket", element: <Basket /> },
+            { path: "checkout", element: <CheckoutPage /> },
+            { path: "server-error", element: <ServerError /> },
+            { path: "login", element: <LoginForm /> },
+            { path: "register", element: <RegistrationForm /> },
+            { path: "not-found", element: <NotFound /> },
+            { path: "*", element: <Navigate replace to="/not-found" /> },
         ],
-      },
-      { path: "", element: <HomePage /> },
-      { path: "catalog", element: <Catalog /> },
-      { path: "catalog/:id", element: <ProductDetails /> },
-      { path: "contact", element: <ContactPage /> },
-      { path: "about", element: <AboutPage /> },
-      { path: "basket", element: <Basket /> },
-      { path: "checkout", element: <CheckoutPage /> },
-      { path: "server-error", element: <ServerError /> },
-      { path: "login", element: <LoginForm /> },
-      { path: "register", element: <RegistrationForm /> },
-      { path: "not-found", element: <NotFound /> },
-      { path: "*", element: <Navigate replace to="/not-found" /> },
-    ],
-  },
+    },
 ]);

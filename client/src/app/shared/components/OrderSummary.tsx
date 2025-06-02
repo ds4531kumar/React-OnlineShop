@@ -1,74 +1,72 @@
 import { Box, Typography, Divider, Button, Paper } from "@mui/material";
 import { currencyFormat } from "../../../lib/util";
-import { Link } from "react-router-dom";
-import { useFetchBasketQuery } from "../../../features/basket/basketApi";
-import { Item } from "../../model/basket";
+import { Link, useLocation } from "react-router-dom";
+import { useBasket } from "../../../lib/hooks/useBasket";
 
 export default function OrderSummary() {
-  const { data: basket } = useFetchBasketQuery();
+    const { subtotal, deliveryFee } = useBasket();
+    const location = useLocation();
 
-  const subtotal =
-    basket?.items.reduce(
-      (sum: number, item: Item) => sum + item.price * item.quantity,
-      0
-    ) ?? 0;
-  const deliveryFee = subtotal > 10000 ? 0 : 500;
-
-  return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      maxWidth="lg"
-      mx="auto"
-    >
-      <Paper sx={{ mb: 2, p: 3, width: "100%", borderRadius: 3 }}>
-        <Typography variant="h6" component="p" fontWeight="bold">
-          Order summary
-        </Typography>
-        <Typography variant="body2" sx={{ fontStyle: "italic" }}>
-          Orders over $100 qualify for free delivery!
-        </Typography>
-        <Box mt={2}>
-          <Box display="flex" justifyContent="space-between" mb={1}>
-            <Typography color="textSecondary">Subtotal</Typography>
-            <Typography>{currencyFormat(subtotal)}</Typography>
-          </Box>
-          {/* <Box display="flex" justifyContent="space-between" mb={1}>
+    return (
+        <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            maxWidth="lg"
+            mx="auto"
+        >
+            <Paper sx={{ mb: 2, p: 3, width: "100%", borderRadius: 3 }}>
+                <Typography variant="h6" component="p" fontWeight="bold">
+                    Order summary
+                </Typography>
+                <Typography variant="body2" sx={{ fontStyle: "italic" }}>
+                    Orders over $100 qualify for free delivery!
+                </Typography>
+                <Box mt={2}>
+                    <Box display="flex" justifyContent="space-between" mb={1}>
+                        <Typography color="textSecondary">Subtotal</Typography>
+                        <Typography>{currencyFormat(subtotal)}</Typography>
+                    </Box>
+                    {/* <Box display="flex" justifyContent="space-between" mb={1}>
             <Typography color="textSecondary">Discount</Typography>
             <Typography color="success">-{currencyFormat(discount)}</Typography>
           </Box> */}
-          <Box display="flex" justifyContent="space-between" mb={1}>
-            <Typography color="textSecondary">Delivery fee</Typography>
-            <Typography>{currencyFormat(deliveryFee)}</Typography>
-          </Box>
-          <Divider sx={{ my: 2 }} />
-          <Box display="flex" justifyContent="space-between" mb={1}>
-            <Typography color="textSecondary">Total</Typography>
-            <Typography>{currencyFormat(subtotal + deliveryFee)}</Typography>
-          </Box>
-        </Box>
+                    <Box display="flex" justifyContent="space-between" mb={1}>
+                        <Typography color="textSecondary">
+                            Delivery fee
+                        </Typography>
+                        <Typography>{currencyFormat(deliveryFee)}</Typography>
+                    </Box>
+                    <Divider sx={{ my: 2 }} />
+                    <Box display="flex" justifyContent="space-between" mb={1}>
+                        <Typography color="textSecondary">Total</Typography>
+                        <Typography>
+                            {currencyFormat(subtotal + deliveryFee)}
+                        </Typography>
+                    </Box>
+                </Box>
 
-        <Box mt={2}>
-          {!location.pathname.includes("checkout") && (
-            <Button
-              component={Link}
-              to="/checkout"
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ mb: 1 }}            >
-              Checkout
-            </Button>
-          )}
-          <Button component={Link} to="/catalog" fullWidth>
-            Continue Shopping
-          </Button>
-        </Box>
-      </Paper>
+                <Box mt={2}>
+                    {!location.pathname.includes("checkout") && (
+                        <Button
+                            component={Link}
+                            to="/checkout"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mb: 1 }}
+                        >
+                            Checkout
+                        </Button>
+                    )}
+                    <Button component={Link} to="/catalog" fullWidth>
+                        Continue Shopping
+                    </Button>
+                </Box>
+            </Paper>
 
-      {/* Coupon Code Section */}
-      {/* {location.pathname.includes("checkout") && (
+            {/* Coupon Code Section */}
+            {/* {location.pathname.includes("checkout") && (
         <Paper sx={{ width: "100%", borderRadius: 3, p: 3 }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Typography variant="subtitle1" component="label">
@@ -115,6 +113,6 @@ export default function OrderSummary() {
           </form>
         </Paper>
       )} */}
-    </Box>
-  );
+        </Box>
+    );
 }

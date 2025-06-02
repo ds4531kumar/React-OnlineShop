@@ -2,7 +2,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithErrorHandling } from "../../app/api/baseApi";
 import { LoginSchema } from "../../lib/schemas/loginSchema";
 import { toast } from "react-toastify";
-import { User } from "../../app/model/user";
+import { Address, User } from "../../app/model/user";
 import { router } from "../../app/router/Routes";
 
 export const accountApi = createApi({
@@ -61,36 +61,36 @@ export const accountApi = createApi({
         //router.navigate("/");
       },
     }),
-    // fetchAddress: builder.query<Address, void>({
-    //   query: () => ({
-    //     url: "account/address",
-    //   }),
-    // }),
-    // updateUserAddress: builder.mutation<Address, Address>({
-    //   query: (address) => ({
-    //     url: "account/address",
-    //     method: "POST",
-    //     body: address,
-    //   }),
-    //   onQueryStarted: async (address, { dispatch, queryFulfilled }) => {
-    //     const patchResult = dispatch(
-    //       accountApi.util.updateQueryData(
-    //         "fetchAddress",
-    //         undefined,
-    //         (draft) => {
-    //           Object.assign(draft, { ...address });
-    //         }
-    //       )
-    //     );
+    fetchAddress: builder.query<Address, void>({
+      query: () => ({
+        url: "account/address",
+      }),
+    }),
+    updateUserAddress: builder.mutation<Address, Address>({
+      query: (address) => ({
+        url: "account/address",
+        method: "POST",
+        body: address,
+      }),
+      onQueryStarted: async (address, { dispatch, queryFulfilled }) => {
+        const patchResult = dispatch(
+          accountApi.util.updateQueryData(
+            "fetchAddress",
+            undefined,
+            (draft) => {
+              Object.assign(draft, { ...address });
+            }
+          )
+        );
 
-    //     try {
-    //       await queryFulfilled;
-    //     } catch (error) {
-    //       patchResult.undo();
-    //       console.log(error);
-    //     }
-    //   },
-    // }),
+        try {
+          await queryFulfilled;
+        } catch (error) {
+          patchResult.undo();
+          console.log(error);
+        }
+      },
+    }),
   }),
 });
 
@@ -100,6 +100,6 @@ export const {
   useLogoutMutation,
   useUserInfoQuery,
   useLazyUserInfoQuery,
-  //useFetchAddressQuery,
-  //useUpdateUserAddressMutation,
+  useFetchAddressQuery,
+  useUpdateUserAddressMutation,
 } = accountApi;

@@ -56,12 +56,12 @@ const myElement = <h1>I Love JSX!</h1>;
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(myElement);
 
-React Components
+# React Components
 
 Components are independent and reusable bits of code. They serve the same purpose as JavaScript functions, but work in isolation and return HTML.
 Components come in two types, Class components and Function components.
 
-Class Component
+# Class Component
 A class component must include the extends React.Component statement. This statement creates an inheritance to React.Component, and gives your component access to React.Component's functions.
 The component also requires a render() method, this method returns HTML.
 
@@ -71,7 +71,7 @@ class Car extends React.Component {
   }
 }
 
-Function Component
+# Function Component
 
 A Function component also returns HTML, and behaves much the same way as a Class component, 
 but Function components can be written using much less code, are easier to understand
@@ -80,7 +80,7 @@ function Car() {
   return <h2>Hi, I am a Car!</h2>;
 }
 
-Props
+# Props
 
 Components can be passed as props, which stands for properties.
 Props are like function arguments, and you send them into the component as attributes.
@@ -92,7 +92,7 @@ function Car(props) {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Car color="red"/>);
 
-React Forms
+# React Forms
 
 You add a form with React like any other element:
 
@@ -139,7 +139,7 @@ function MyForm() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<MyForm />);
 
-React Router
+# React Router
 
 npm i -D react-router-dom
 
@@ -197,8 +197,345 @@ export default Layout;
 
 note:-JavaScript expressions are written inside curly braces, and since JavaScript objects also use curly braces, the styling in the example above is written inside two sets of curly braces {{}}
 
+# React Hooks
 
+Hooks were added to React in version 16.8
+Hooks allow function components to have access to state and other React features. 
 
+What is a Hook?
+Hooks allow us to "hook" into React features such as state and lifecycle methods.
+
+Hook Rules
+There are 3 rules for hooks:-
+1.Hooks can only be called inside React function components.
+2.Hooks can only be called at the top level of a component.
+3.Hooks cannot be conditional
+
+useState 
+The React useState Hook allows us to track state in a function component.
+State generally refers to data or properties that need to be tracking in an application.
+
+import { useState } from "react";
+import ReactDOM from "react-dom/client";
+
+function FavoriteColor() {
+  const [color, setColor] = useState("red");
+
+  return (
+    <>
+      <h1>My favorite color is {color}!</h1>
+      <button
+        type="button"
+        onClick={() => setColor("blue")}
+      >Blue</button>
+    </>
+  )
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<FavoriteColor />);
+
+import { useState } from "react";
+import ReactDOM from "react-dom/client";
+
+function Car() {
+  const [car, setCar] = useState({
+    brand: "Ford",
+    model: "Mustang",
+    year: "1964",
+    color: "red"
+  });
+
+  const updateColor = () => {
+    setCar(previousState => {
+      return { ...previousState, color: "blue" }
+    });
+  }
+
+  return (
+    <>
+      <h1>My {car.brand}</h1>
+      <p>
+        It is a {car.color} {car.model} from {car.year}.
+      </p>
+      <button
+        type="button"
+        onClick={updateColor}
+      >Blue</button>
+    </>
+  )
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Car />);
+
+useEffect 
+
+The useEffect Hook allows you to perform side effects in your components.
+Some examples of side effects are: fetching data, directly updating the DOM, and timers.
+useEffect accepts two arguments. The second argument is optional.
+
+import { useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+
+function Timer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let timer = setTimeout(() => {
+    setCount((count) => count + 1);
+  }, 1000);
+
+  return () => clearTimeout(timer)
+  }, []);
+
+  return <h1>I've rendered {count} times!</h1>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Timer />);
+
+useContext
+
+React Context is a way to manage state globally.
+It can be used together with the useState Hook to share state between deeply nested components more easily than with useState alone.
+
+import { useState, createContext, useContext } from "react";
+import ReactDOM from "react-dom/client";
+
+const UserContext = createContext();
+
+function Component1() {
+  const [user, setUser] = useState("Jesse Hall");
+
+  return (
+    <UserContext.Provider value={user}>
+      <h1>{`Hello ${user}!`}</h1>
+      <Component2 />
+    </UserContext.Provider>
+  );
+}
+
+function Component2() {
+  return (
+    <>
+      <h1>Component 2</h1>
+      <Component3 />
+    </>
+  );
+}
+
+function Component3() {
+  return (
+    <>
+      <h1>Component 3</h1>
+      <Component4 />
+    </>
+  );
+}
+
+function Component4() {
+  return (
+    <>
+      <h1>Component 4</h1>
+      <Component5 />
+    </>
+  );
+}
+
+function Component5() {
+  const user = useContext(UserContext);
+
+  return (
+    <>
+      <h1>Component 5</h1>
+      <h2>{`Hello ${user} again!`}</h2>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Component1 />);
+
+useRef 
+
+The useRef Hook allows you to persist values between renders.
+It can be used to store a mutable value that does not cause a re-render when updated.
+It can be used to access a DOM element directly.
+
+import { useState, useEffect, useRef } from "react";
+import ReactDOM from "react-dom/client";
+
+function App() {
+  const [inputValue, setInputValue] = useState("");
+  const count = useRef(0);
+
+  useEffect(() => {
+    count.current = count.current + 1;
+  });
+return (
+    <>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h1>Render Count: {count.current}</h1>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+Tracking State Changes
+The useRef Hook can also be used to keep track of previous state values.
+
+import { useState, useEffect, useRef } from "react";
+import ReactDOM from "react-dom/client";
+
+function App() {
+  const [inputValue, setInputValue] = useState("");
+  const previousInputValue = useRef("");
+
+  useEffect(() => {
+    previousInputValue.current = inputValue;
+  }, [inputValue]);
+
+  return (
+    <>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h2>Current Value: {inputValue}</h2>
+      <h2>Previous Value: {previousInputValue.current}</h2>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+useReducer 
+
+The useReducer Hook is similar to the useState Hook.
+It allows for custom state logic.
+If you find yourself keeping track of multiple pieces of state that rely on complex logic, useReducer may be useful.
+
+The useReducer Hook accepts two arguments.
+useReducer(<reducer>, <initialState>)
+
+The reducer function contains your custom state logic and the initialStatecan be a simple value but generally will contain an object.
+The useReducer Hook returns the current stateand a dispatchmethod.
+
+import { useReducer } from "react";
+import ReactDOM from "react-dom/client";
+
+const initialTodos = [
+  {
+    id: 1,
+    title: "Todo 1",
+    complete: false,
+  },
+  {
+    id: 2,
+    title: "Todo 2",
+    complete: false,
+  },
+];
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "COMPLETE":
+      return state.map((todo) => {
+        if (todo.id === action.id) {
+          return { ...todo, complete: !todo.complete };
+        } else {
+          return todo;
+        }
+      });
+    default:
+      return state;
+  }
+};
+
+function Todos() {
+  const [todos, dispatch] = useReducer(reducer, initialTodos);
+
+  const handleComplete = (todo) => {
+    dispatch({ type: "COMPLETE", id: todo.id });
+  };
+
+  return (
+    <>
+      {todos.map((todo) => (
+        <div key={todo.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={todo.complete}
+              onChange={() => handleComplete(todo)}
+            />
+            {todo.title}
+          </label>
+        </div>
+      ))}
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Todos />);
+
+Custom Hook
+
+A custom hook is a JavaScript function whose name starts with use and can call other hooks (like useState, useEffect, etc.).
+
+Create the custom hook
+import { useState, useEffect } from "react";
+
+const useFetch = (url) => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => setData(data));
+  }, [url]);
+
+  return [data];
+};
+
+export default useFetch;
+
+Use it in a component
+import ReactDOM from "react-dom/client";
+import useFetch from "./useFetch";
+
+const Home = () => {
+  const [data] = useFetch("https://jsonplaceholder.typicode.com/todos");
+
+  return (
+    <>
+      {data &&
+        data.map((item) => {
+          return <p key={item.id}>{item.title}</p>;
+        })}
+    </>
+  );
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Home />);
+
+When to Use Custom Hooks?
+
+Fetching or updating data
+Handling timers/intervals
+Forms or input handling
+Reusing logic across multiple components
 
 # Slice in react
 A slice is a portion of the Redux state and all the logic (actions + reducers) related to that portion, bundled together in one place.
@@ -462,55 +799,6 @@ Auto caching	        No need to manually manage state
 Refetching control	    Re-fetch on focus or interval
 Auto invalidation	    Keeps data fresh after updates
 Code generation	        Custom hooks like useGetUsersQuery()
-
-# Custom Hook
-
-A custom hook is a JavaScript function whose name starts with use and can call other hooks (like useState, useEffect, etc.).
-
-Create the custom hook
-// useWindowWidth.js
-import { useState, useEffect } from 'react';
-
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-
-    window.addEventListener('resize', handleResize);
-    
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  return width;
-}
-
-export default useWindowWidth;
-
-Use it in a component
-// ResponsiveComponent.js
-import React from 'react';
-import useWindowWidth from './useWindowWidth';
-
-function ResponsiveComponent() {
-  const width = useWindowWidth();
-
-  return (
-    <div>
-      <h1>Window width: {width}px</h1>
-      {width > 768 ? <p>Desktop view</p> : <p>Mobile view</p>}
-    </div>
-  );
-}
-
-export default ResponsiveComponent;
-
-When to Use Custom Hooks?
-
-Fetching or updating data
-Handling timers/intervals
-Forms or input handling
-Reusing logic across multiple components
 
 
 
